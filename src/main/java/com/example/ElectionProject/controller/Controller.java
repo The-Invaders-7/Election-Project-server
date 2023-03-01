@@ -23,12 +23,6 @@ public class Controller {
     @Autowired
     private VoterService voterService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam("file")MultipartFile file) throws Exception{
-        return new ResponseEntity<>(voterService.addImage(file),HttpStatus.OK);
-    }
-
-
 //    @GetMapping("/get/{name}")
 //    public ResponseEntity<?> register(@PathVariable("name") String name){
 //        List<User> user=this.userRepository.findByFirstNameStartingWith(name);
