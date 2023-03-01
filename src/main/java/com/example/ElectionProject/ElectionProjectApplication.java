@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
+
 @RestController
 @SpringBootApplication
 public class ElectionProjectApplication {
@@ -15,6 +17,8 @@ public class ElectionProjectApplication {
 		SpringApplication.run(ElectionProjectApplication.class, args);
 	}
 
+
+	//home page
 	@RequestMapping("/")
 	public String home(){
 		return "Main Page Electon Management System";
