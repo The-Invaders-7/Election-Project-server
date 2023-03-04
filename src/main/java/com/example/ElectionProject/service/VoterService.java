@@ -5,6 +5,7 @@ import com.example.ElectionProject.repository.UserRepository;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -26,11 +27,12 @@ public class VoterService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public List<User> findBy(String firstName, String middleName, String lastName, String city){
+    public List<User> findBy(String firstName, String middleName, String lastName, String city, Pageable pageable){
         try{
             Query query = new Query();
+            query.with(pageable);
             if(firstName=="" && middleName=="" && lastName=="" && city==""){
-                return userRepository.findAll();
+                return mongoTemplate.find(query, User.class);
             }
             if(firstName!=""){;
                 firstName="^"+firstName;

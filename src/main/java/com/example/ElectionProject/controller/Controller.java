@@ -4,6 +4,8 @@ import com.example.ElectionProject.models.User;
 import com.example.ElectionProject.repository.UserRepository;
 import com.example.ElectionProject.service.VoterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +32,9 @@ public class Controller {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName, @RequestParam(value="city") String city){
-        System.out.println(firstName+" "+middleName+" "+lastName);
-        List<User> user=this.voterService.findBy(firstName,middleName,lastName,city);
+    public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName, @RequestParam(value="city") String city,@RequestParam(value="pageNo") int pageNo){
+        Pageable paging = PageRequest.of(pageNo, 2);
+        List<User> user=this.voterService.findBy(firstName,middleName,lastName,city,paging);
         return ResponseEntity.ok(user);
     }
 
