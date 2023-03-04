@@ -23,11 +23,11 @@ public class Controller {
     @Autowired
     private VoterService voterService;
 
-//    @GetMapping("/get/{name}")
-//    public ResponseEntity<?> register(@PathVariable("name") String name){
-//        List<User> user=this.userRepository.findByFirstNameStartingWith(name);
-//        return ResponseEntity.ok(user);
-//    }
+    @GetMapping("/get/{name}")
+    public ResponseEntity<?> register(@PathVariable("name") String name){
+        List<User> user=this.userRepository.findByFirstNameStartingWith(name);
+        return ResponseEntity.ok(user);
+    }
 
     @GetMapping("/get")
     public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName, @RequestParam(value="city") String city){

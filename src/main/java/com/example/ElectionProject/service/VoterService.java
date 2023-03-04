@@ -5,6 +5,10 @@ import com.example.ElectionProject.repository.UserRepository;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
@@ -19,13 +23,33 @@ public class VoterService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    MongoTemplate mongoTemplate;
+
     public List<User> findBy(String firstName, String middleName, String lastName, String city){
         try{
-            firstName="^"+firstName;
-            middleName="^"+middleName;
-            lastName="^"+lastName;
-            city="^"+city;
-            return this.userRepository.findBy(firstName,middleName,lastName,city);
+            Query query = new Query();
+            if(firstName=="" && middleName=="" && lastName=="" && city==""){
+                return userRepository.findAll();
+            }
+            if(firstName!=""){;
+                firstName="^"+firstName;
+                query.addCriteria(Criteria.where("firstName").regex(firstName));
+            }
+            if(middleName!=""){
+                middleName="^"+middleName;
+                query.addCriteria(Criteria.where("lastName").regex("^"+lastName));
+            }
+            if(lastName!=""){
+                lastName="^"+lastName;
+                query.addCriteria(Criteria.where("lastName").regex("^"+lastName));
+            }
+            if(city!=""){
+                city="^"+city;
+                query.addCriteria(Criteria.where("city").regex("^"+city));
+            }
+            List<User> users = mongoTemplate.find(query, User.class);
+            return users;
         }
         catch(Exception e){
             e.printStackTrace();
