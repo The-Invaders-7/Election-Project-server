@@ -12,6 +12,6 @@ public interface UserRepository extends MongoRepository<User,Long> {
     List<User> findByCity(String city);
 
     @Query("{'firstName': {$regex:?0},'middleName': {$regex:?1},'lastName': {$regex:?2},'city': {$regex:?3}}")
-    List<User> findBy(String firstName,String middleName,String lastName,String city);
+    List<User> findBy(String firstName,String middleName,String lastName,String city,Pageable pageable);
 
 }
