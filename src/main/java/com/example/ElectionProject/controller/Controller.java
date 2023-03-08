@@ -1,13 +1,14 @@
 package com.example.ElectionProject.controller;
 
-import com.example.ElectionProject.models.User;
-import com.example.ElectionProject.repository.UserRepository;
+import com.example.ElectionProject.models.Voter;
+import com.example.ElectionProject.repository.VoterRepository;
 import com.example.ElectionProject.service.VoterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,22 +19,22 @@ import java.util.List;
 public class Controller {
 
     @Autowired
-    private UserRepository userRepository;
+    private VoterRepository voterRepository;
 
     @Autowired
     private VoterService voterService;
 
-    @GetMapping("/get/{name}")
-    public ResponseEntity<?> register(@PathVariable("name") String name){
-        List<User> user=this.userRepository.findByFirstNameStartingWith(name);
-        return ResponseEntity.ok(user);
+    @GetMapping("/get/{VoterId}")
+    public ResponseEntity<?> findByVoterId(@PathVariable("VoterId") String voterId){
+        Voter voter=this.voterRepository.findByVoterId(voterId);
+        return ResponseEntity.ok(voter);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName, @RequestParam(value="city") String city){
-        System.out.println(firstName+" "+middleName+" "+lastName);
-        List<User> user=this.voterService.findBy(firstName,middleName,lastName,city);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
+        Pageable paging = PageRequest.of(pageNo, 40);
+        List<Voter> voter=this.voterService.findBy(firstName,middleName,lastName,gender,age,district,city,ward,paging);
+        return ResponseEntity.ok(voter);
     }
 
 //    @GetMapping("/retrieve/{id}")
@@ -45,20 +46,20 @@ public class Controller {
     //Get request to get all voters
     @GetMapping("/")
     public ResponseEntity<?> getAllVoters(){
-        return ResponseEntity.ok(this.userRepository.findAll());
+        return ResponseEntity.ok(this.voterRepository.findAll());
     }
     //post request to save voter
     @PostMapping("/")
-    public ResponseEntity<?> addVoter(@RequestBody User user){
-        User userSave=this.userRepository.save(user);
-        return ResponseEntity.ok(userSave);
+    public ResponseEntity<?> addVoter(@RequestBody Voter user){
+        Voter voterSave=this.voterRepository.save(user);
+        return ResponseEntity.ok(voterSave);
     }
 
     //Delete request to delete voter with a given aadhar_no
     @DeleteMapping("/delete/{aadhar_no}")
     public ResponseEntity<?> deleteVoter(@PathVariable("aadhar_no") long aadhar_no){
         try {
-            this.userRepository.deleteById(aadhar_no);
+            this.voterRepository.deleteById(aadhar_no);
             return ResponseEntity.ok("Deleted voter with Aadhar no "+aadhar_no);
         }
         catch(Exception e){
@@ -71,7 +72,7 @@ public class Controller {
     @DeleteMapping("/deleteAll")
     public ResponseEntity<?> deleteAllVoter(){
         try {
-            this.userRepository.deleteAll();
+            this.voterRepository.deleteAll();
             return ResponseEntity.ok("Deleted all voters");
         }
         catch(Exception e){
@@ -81,11 +82,11 @@ public class Controller {
     }
 
     //Put Request to update voter with giveen aadhar_no
-    @PutMapping("/update/{aadhar_no}")
-    public ResponseEntity<?> updateVoter(@PathVariable("aadhar_no") long aadhar_no,@RequestBody User user){
+    @PutMapping("/update/{VoterId}")
+    public ResponseEntity<?> updateVoter(@PathVariable("VoterId") long voterId,@RequestBody Voter voter){
         try{
-            User userUpdated=this.userRepository.save(user);
-            return ResponseEntity.ok("Update voter with Aadhar no "+aadhar_no);
+            Voter voterUpdated=this.voterRepository.save(voter);
+            return ResponseEntity.ok("Update voter with VoterId "+voterId);
         }
         catch(Exception e){
             e.printStackTrace();
