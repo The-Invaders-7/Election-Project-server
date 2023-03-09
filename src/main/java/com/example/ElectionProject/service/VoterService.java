@@ -1,5 +1,6 @@
 package com.example.ElectionProject.service;
 
+import com.example.ElectionProject.message.QueryResponse;
 import com.example.ElectionProject.models.Voter;
 import com.example.ElectionProject.repository.VoterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,11 @@ public class VoterService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public List<Voter> findBy(String firstName,String middleName,String lastName,String gender,int age,String district,String city,String ward, Pageable pageable){
+    public QueryResponse findBy(String firstName, String middleName, String lastName, String gender, int age, String district, String city, String ward, Pageable pageable){
         try{
             Query query = new Query();
             if(firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && district=="" && city=="" && ward==""){
-                return new ArrayList<Voter>();
+                return new QueryResponse(new ArrayList<Voter>(),0);
             }
             if(firstName!=""){;
                 firstName="^"+firstName;
@@ -66,13 +67,13 @@ public class VoterService {
             Query voterQuery = query.with(pageable);
             List<Voter> filteredVoter = mongoTemplate.find(voterQuery, Voter.class);
             Page<Voter> resultantVoter=PageableExecutionUtils.getPage(filteredVoter,pageable,()->count);
-            System.out.println(resultantVoter+" Total Pages "+resultantVoter.getTotalPages()+" Total results "+resultantVoter.getTotalElements());
-
-            return filteredVoter;
+//            System.out.println(resultantVoter+" Total Pages "+resultantVoter.getTotalPages()+" Total results "+resultantVoter.getTotalElements());
+            QueryResponse results=new QueryResponse(filteredVoter,resultantVoter.getTotalPages());
+            return results;
         }
         catch(Exception e){
             e.printStackTrace();
-            return new ArrayList<Voter>();
+            return new QueryResponse(new ArrayList<Voter>(),0);
         }
     }
 
