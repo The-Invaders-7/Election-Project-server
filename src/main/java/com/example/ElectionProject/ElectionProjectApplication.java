@@ -18,6 +18,6 @@ public class ElectionProjectApplication {
 	//home page
 	@RequestMapping("/")
 	public String home(){
-		return "Main Page Electon Management System";
+		return "Main Page Electon Management System, testing";
 	}
 }
