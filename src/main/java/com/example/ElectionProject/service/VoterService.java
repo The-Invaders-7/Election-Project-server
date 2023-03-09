@@ -37,7 +37,7 @@ public class VoterService {
             }
             if(middleName!=""){
                 middleName="^"+middleName;
-                query.addCriteria(Criteria.where("lastName").regex("^"+lastName));
+                query.addCriteria(Criteria.where("middleName").regex("^"+middleName));
             }
             if(lastName!=""){
                 lastName="^"+lastName;
