@@ -3,14 +3,19 @@ package com.example.ElectionProject.service;
 import com.example.ElectionProject.models.Voter;
 import com.example.ElectionProject.repository.VoterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.support.PageableExecutionUtils.getPage;
+
 
 @Service
 public class VoterService {
@@ -23,9 +28,8 @@ public class VoterService {
     public List<Voter> findBy(String firstName,String middleName,String lastName,String gender,int age,String district,String city,String ward, Pageable pageable){
         try{
             Query query = new Query();
-            query.with(pageable);
             if(firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && district=="" && city=="" && ward==""){
-                return mongoTemplate.find(query, Voter.class);
+                return new ArrayList<Voter>();
             }
             if(firstName!=""){;
                 firstName="^"+firstName;
@@ -44,7 +48,7 @@ public class VoterService {
                 query.addCriteria(Criteria.where("gender").regex("^"+gender));
             }
             if(age!=-1){
-                query.addCriteria(Criteria.where("$where").is("/^"+age+".*/.test(this.age)"));
+                query.addCriteria(Criteria.where("age").is(age));
             }
             if(district!="") {
                 district = "^" + district;
@@ -58,8 +62,13 @@ public class VoterService {
                 ward="^"+ward;
                 query.addCriteria(Criteria.where("ward").regex("^"+ward));
             }
-            List<Voter> voters = mongoTemplate.find(query, Voter.class);
-            return voters;
+            long count=mongoTemplate.count(query,Voter.class);
+            Query voterQuery = query.with(pageable);
+            List<Voter> filteredVoter = mongoTemplate.find(voterQuery, Voter.class);
+            Page<Voter> resultantVoter=PageableExecutionUtils.getPage(filteredVoter,pageable,()->count);
+            System.out.println(resultantVoter+" Total Pages "+resultantVoter.getTotalPages()+" Total results "+resultantVoter.getTotalElements());
+
+            return filteredVoter;
         }
         catch(Exception e){
             e.printStackTrace();
