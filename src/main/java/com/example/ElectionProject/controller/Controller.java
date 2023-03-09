@@ -32,9 +32,9 @@ public class Controller {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
-        Pageable paging = PageRequest.of(pageNo, 2);
-        QueryResponse voter=this.voterService.findBy(firstName,middleName,lastName,gender,age,district,city,ward,paging);
+    public ResponseEntity<?> getUser(@RequestParam(value="voterId") String voterId,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
+        Pageable paging = PageRequest.of(pageNo, 20);
+        QueryResponse voter=this.voterService.findBy(voterId,firstName,middleName,lastName,gender,age,district,city,ward,paging);
         //voter.getTotalPages();
         return ResponseEntity.ok(voter);
     }
