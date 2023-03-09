@@ -1,5 +1,6 @@
 package com.example.ElectionProject.controller;
 
+import com.example.ElectionProject.message.QueryResponse;
 import com.example.ElectionProject.models.Voter;
 import com.example.ElectionProject.repository.VoterRepository;
 import com.example.ElectionProject.service.VoterService;
@@ -33,7 +34,7 @@ public class Controller {
     @GetMapping("/get")
     public ResponseEntity<?> getUser(@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
         Pageable paging = PageRequest.of(pageNo, 2);
-        List<Voter> voter=this.voterService.findBy(firstName,middleName,lastName,gender,age,district,city,ward,paging);
+        QueryResponse voter=this.voterService.findBy(firstName,middleName,lastName,gender,age,district,city,ward,paging);
         //voter.getTotalPages();
         return ResponseEntity.ok(voter);
     }
