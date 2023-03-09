@@ -20,6 +20,7 @@ public class Voter {
     private String lastName;
     private String gender;
     private int age;
+    private String voterReceipt;
     private String district;
     private String city;
     private String ward;
