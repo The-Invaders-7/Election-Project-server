@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class Controller {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private VoterRepository voterRepository;
@@ -50,6 +55,9 @@ public class Controller {
     public ResponseEntity<?> getAllVoters(){
         return ResponseEntity.ok(this.voterRepository.findAll());
     }
+
+
+
     //post request to save voter
     @PostMapping("/")
     public ResponseEntity<?> addVoter(@RequestBody Voter user){

@@ -14,10 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="admin")
 public class Admin {
     @Id
-    private long aadharNo;
-    private String firstName;
-    private String middleName;
-    private String lastName;
+    private String userName;
     private String email;
     private String password;
 

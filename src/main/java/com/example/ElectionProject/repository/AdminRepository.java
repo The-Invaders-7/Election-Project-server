@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface AdminRepository extends MongoRepository<Admin,Long> {
 
-    Admin findByEmail(String email);
+    Admin findByUserName(String userName);
     Boolean existsByEmail(String email);
-    Boolean existsByaadharNo(Long aadharNo);
 }
