@@ -26,15 +26,15 @@ public class VoterService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public QueryResponse findBy(String voterId,String firstName, String middleName, String lastName, String gender, int age, String district, String city, String ward, Pageable pageable){
+    public QueryResponse findBy(String voterID,String firstName, String middleName, String lastName, String gender, int age, String district, String city, String ward, Pageable pageable){
         try{
             Query query = new Query();
-            if(voterId=="" && firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && district=="" && city=="" && ward==""){
+            if(voterID=="" && firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && district=="" && city=="" && ward==""){
                 return new QueryResponse(new ArrayList<Voter>(),0);
             }
-            if(voterId!=""){;
-                voterId="^"+voterId;
-                query.addCriteria(Criteria.where("voterId").regex(voterId));
+            if(voterID!=""){;
+                voterID="^"+voterID;
+                query.addCriteria(Criteria.where("voterID").regex(voterID));
             }
             if(firstName!=""){;
                 firstName="^"+firstName;

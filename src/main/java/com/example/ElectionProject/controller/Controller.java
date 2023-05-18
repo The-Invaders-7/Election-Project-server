@@ -30,16 +30,16 @@ public class Controller {
     @Autowired
     private VoterService voterService;
 
-    @GetMapping("/get/{VoterId}")
-    public ResponseEntity<?> findByVoterId(@PathVariable("VoterId") String voterId){
-        Voter voter=this.voterRepository.findByVoterId(voterId);
+    @GetMapping("/get/{voterID}")
+    public ResponseEntity<?> findByVoterID(@PathVariable("voterID") String voterID){
+        Voter voter=this.voterRepository.findByVoterID(voterID);
         return ResponseEntity.ok(voter);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getUser(@RequestParam(value="voterId") String voterId,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
+    public ResponseEntity<?> getUser(@RequestParam(value="voterID") String voterID,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
         Pageable paging = PageRequest.of(pageNo, 20);
-        QueryResponse voter=this.voterService.findBy(voterId,firstName,middleName,lastName,gender,age,district,city,ward,paging);
+        QueryResponse voter=this.voterService.findBy(voterID,firstName,middleName,lastName,gender,age,district,city,ward,paging);
         //voter.getTotalPages();
         return ResponseEntity.ok(voter);
     }
@@ -92,11 +92,11 @@ public class Controller {
     }
 
     //Put Request to update voter with giveen aadhar_no
-    @PutMapping("/update/{VoterId}")
-    public ResponseEntity<?> updateVoter(@PathVariable("VoterId") long voterId,@RequestBody Voter voter){
+    @PutMapping("/update/{VoterID}")
+    public ResponseEntity<?> updateVoter(@PathVariable("VoterID") long voterID,@RequestBody Voter voter){
         try{
             Voter voterUpdated=this.voterRepository.save(voter);
-            return ResponseEntity.ok("Update voter with VoterId "+voterId);
+            return ResponseEntity.ok("Update voter with voterID "+voterID);
         }
         catch(Exception e){
             e.printStackTrace();
