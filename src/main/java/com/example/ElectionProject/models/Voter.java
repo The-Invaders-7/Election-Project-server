@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -20,8 +21,7 @@ public class Voter {
     private String lastName;
     private String gender;
     private int age;
-    private String voterReceipt;
-    private String district;
-    private String city;
-    private String ward;
+    private String imageString;
+    @DBRef
+    private Ward ward;
 }

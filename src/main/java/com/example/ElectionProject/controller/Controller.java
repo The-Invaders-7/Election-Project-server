@@ -1,8 +1,14 @@
 package com.example.ElectionProject.controller;
 
 import com.example.ElectionProject.message.QueryResponse;
+import com.example.ElectionProject.models.City;
+import com.example.ElectionProject.models.State;
 import com.example.ElectionProject.models.Voter;
+import com.example.ElectionProject.models.Ward;
+import com.example.ElectionProject.repository.CityRepository;
+import com.example.ElectionProject.repository.StateRepository;
 import com.example.ElectionProject.repository.VoterRepository;
+import com.example.ElectionProject.repository.WardRepository;
 import com.example.ElectionProject.service.VoterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +32,9 @@ public class Controller {
 
     @Autowired
     private VoterRepository voterRepository;
+    private StateRepository stateRepository;
+    private CityRepository cityRepository;
+    private WardRepository wardRepository;
 
     @Autowired
     private VoterService voterService;
@@ -37,9 +46,9 @@ public class Controller {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getUser(@RequestParam(value="voterId") String voterId,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="district") String district, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
-        Pageable paging = PageRequest.of(pageNo, 20);
-        QueryResponse voter=this.voterService.findBy(voterId,firstName,middleName,lastName,gender,age,district,city,ward,paging);
+    public ResponseEntity<?> getUser(@RequestParam(value="voterId") String voterId,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="state") String state, @RequestParam(value="city") String city,@RequestParam(value="ward") String ward,@RequestParam(value="pageNo") int pageNo){
+        Pageable paging = PageRequest.of(pageNo, 1);
+        QueryResponse voter=this.voterService.findBy(voterId,firstName,middleName,lastName,gender,age,state,city,ward,paging);
         //voter.getTotalPages();
         return ResponseEntity.ok(voter);
     }
@@ -60,8 +69,46 @@ public class Controller {
 
     //post request to save voter
     @PostMapping("/")
-    public ResponseEntity<?> addVoter(@RequestBody Voter user){
-        Voter voterSave=this.voterRepository.save(user);
+    public ResponseEntity<?> addVoter(@RequestParam(value="voterId") String voterId,@RequestParam(value="firstName") String firstName,@RequestParam(value="middleName") String middleName,@RequestParam(value="lastName") String lastName,@RequestParam(value="gender") String gender,@RequestParam(value="age") int age,@RequestParam(value="voterReceipt") String voterReceipt){
+        State state;
+        if(this.stateRepository==null){
+            state = new State(0,"Maharashtra");
+            this.stateRepository.save(state);
+        }
+        else {
+            state = this.stateRepository.findByName("Maharashtra");
+            if (state == null) {
+                state = new State(0,"Maharashtra");
+                this.stateRepository.save(state);
+            }
+        }
+        City city;
+        if(this.cityRepository==null){
+            city = new City(1, "Nashik", state);
+            this.cityRepository.save(city);
+        }
+        else {
+            city = this.cityRepository.findByNameAndState("Nashik", state);
+            if (city == null) {
+                city = new City(1, "Nashik", state);
+                this.cityRepository.save(city);
+            }
+        }
+        Ward ward;
+        if(this.wardRepository==null){
+            ward=new Ward(2,"Saraf Nagar",city);
+            this.wardRepository.save(ward);
+        }
+        else {
+            ward = this.wardRepository.findByNameAndCity("Saraf Nagar", city);
+            if (ward == null) {
+                ward = new Ward(2, "Saraf Nagar", city);
+                this.wardRepository.save(ward);
+            }
+        }
+        Voter voter=new Voter(voterId,firstName,middleName,lastName,gender,age,voterReceipt,ward);
+        Voter voterSave=this.voterRepository.save(voter);
+        System.out.println(voter.toString()+" "+voterSave);
         return ResponseEntity.ok(voterSave);
     }
 

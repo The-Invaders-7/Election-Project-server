@@ -36,7 +36,7 @@ public class AdminController {
 
     @PostMapping("/register")
     public ResponseEntity<?>  register(@RequestBody Admin admin){
-        admin.setPassword(this.bCryptPasswordEncoder.encode("devanshu"));
+        admin.setPassword(this.bCryptPasswordEncoder.encode(admin.getPassword()));
         Admin adminSave=this.adminRepository.save(admin);
         return ResponseEntity.ok(adminSave);
     }

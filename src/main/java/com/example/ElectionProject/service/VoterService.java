@@ -1,8 +1,14 @@
 package com.example.ElectionProject.service;
 
 import com.example.ElectionProject.message.QueryResponse;
+import com.example.ElectionProject.models.City;
+import com.example.ElectionProject.models.State;
 import com.example.ElectionProject.models.Voter;
+import com.example.ElectionProject.models.Ward;
+import com.example.ElectionProject.repository.CityRepository;
+import com.example.ElectionProject.repository.StateRepository;
 import com.example.ElectionProject.repository.VoterRepository;
+import com.example.ElectionProject.repository.WardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +28,27 @@ import static org.springframework.data.support.PageableExecutionUtils.getPage;
 public class VoterService {
     @Autowired
     private VoterRepository voterRepository;
+    private StateRepository stateRepository;
+    private CityRepository cityRepository;
+    private WardRepository wardRepository;
 
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public QueryResponse findBy(String voterId,String firstName, String middleName, String lastName, String gender, int age, String district, String city, String ward, Pageable pageable){
+    public QueryResponse findBy(String voterId,String firstName, String middleName, String lastName, String gender, int age, String stateName, String cityName, String wardName, Pageable pageable){
         try{
             Query query = new Query();
-            if(voterId=="" && firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && district=="" && city=="" && ward==""){
+            if(voterId=="" && firstName=="" && middleName=="" && lastName=="" && gender=="" && age==-1 && stateName=="" && cityName=="" && wardName==""){
                 return new QueryResponse(new ArrayList<Voter>(),0);
+            }
+            if(stateName!="") {
+                query.addCriteria(Criteria.where("ward.city.state.name").regex(stateName));
+            }
+            if(cityName!=""){
+                query.addCriteria(Criteria.where("ward.city.name").regex(cityName));
+            }
+            if(wardName!=""){
+                query.addCriteria(Criteria.where("ward.name").regex(wardName));
             }
             if(voterId!=""){;
                 voterId="^"+voterId;
@@ -55,23 +73,12 @@ public class VoterService {
             if(age!=-1){
                 query.addCriteria(Criteria.where("age").is(age));
             }
-            if(district!="") {
-                district = "^" + district;
-                query.addCriteria(Criteria.where("district").regex("^" + district));
-            }
-            if(city!=""){
-                city="^"+city;
-                query.addCriteria(Criteria.where("city").regex("^"+city));
-            }
-            if(ward!=""){
-                ward="^"+ward;
-                query.addCriteria(Criteria.where("ward").regex("^"+ward));
-            }
             long count=mongoTemplate.count(query,Voter.class);
+
             Query voterQuery = query.with(pageable);
             List<Voter> filteredVoter = mongoTemplate.find(voterQuery, Voter.class);
             Page<Voter> resultantVoter=PageableExecutionUtils.getPage(filteredVoter,pageable,()->count);
-//            System.out.println(resultantVoter+" Total Pages "+resultantVoter.getTotalPages()+" Total results "+resultantVoter.getTotalElements());
+////            System.out.println(resultantVoter+" Total Pages "+resultantVoter.getTotalPages()+" Total results "+resultantVoter.getTotalElements());
             QueryResponse results=new QueryResponse(filteredVoter,resultantVoter.getTotalPages());
             return results;
         }
