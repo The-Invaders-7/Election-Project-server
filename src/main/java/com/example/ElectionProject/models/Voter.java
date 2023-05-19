@@ -14,13 +14,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Voter {
 
     @Id
-    private String voterId;
+    private String voterID;
     private String firstName;
     private String middleName;
     private String lastName;
     private String gender;
     private int age;
-    private String voterReceipt;
+    private String imageString;
     private String district;
     private String city;
     private String ward;
