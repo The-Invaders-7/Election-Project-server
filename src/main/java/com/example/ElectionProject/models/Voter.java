@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection="Voters")
 public class Voter {
-
-    @Id
     private String voterID;
     private String firstName;
     private String middleName;
