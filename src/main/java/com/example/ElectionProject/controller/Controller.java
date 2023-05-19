@@ -66,11 +66,11 @@ public class Controller {
     }
 
     //Delete request to delete voter with a given aadhar_no
-    @DeleteMapping("/delete/{aadhar_no}")
-    public ResponseEntity<?> deleteVoter(@PathVariable("aadhar_no") long aadhar_no){
+    @DeleteMapping("/delete/{voterID}")
+    public ResponseEntity<?> deleteVoter(@PathVariable("voterID") long voterID){
         try {
-            this.voterRepository.deleteById(aadhar_no);
-            return ResponseEntity.ok("Deleted voter with Aadhar no "+aadhar_no);
+            this.voterRepository.deleteById(voterID);
+            return ResponseEntity.ok("Deleted voter with Aadhar no "+voterID);
         }
         catch(Exception e){
             e.printStackTrace();

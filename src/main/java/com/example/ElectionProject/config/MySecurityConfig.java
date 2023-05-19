@@ -65,7 +65,9 @@ public class MySecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/user/**")
                 .permitAll()
-                .requestMatchers("/admin/*")
+                .requestMatchers("/admin/login")
+                .permitAll()
+                .requestMatchers("/admin/register**")
                 .authenticated()
                 .and()
                 .httpBasic();
